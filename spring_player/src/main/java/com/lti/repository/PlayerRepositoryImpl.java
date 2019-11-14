@@ -1,14 +1,34 @@
 package com.lti.repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.lti.model.Player;
 @Repository("repository")
 public class PlayerRepositoryImpl implements PlayerRepository {
 	
+	DataSource datasource;
+
+	
+	
+	public DataSource getDatasource() {
+		return datasource;
+	}
+
+	@Autowired
+	public void setDatasource(DataSource datasource) {
+		this.datasource = datasource;
+	}
+
+
 	public List<Player> findAll()
 	{
 		Player p = new Player();
@@ -38,6 +58,74 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 		list.add(p1);
 		return list;
 		
+	}
+	
+	public void addPlayer(Player p)
+	{
+		try
+		{
+			Connection con = getDatasource().getConnection();
+			String query = "Insert into player values(?,?,?,?,?,?,?,?,?)";
+			PreparedStatement pstmt = con.prepareStatement(query);
+			pstmt.setInt(1,p.getId());
+			pstmt.setString(2, p.getCountry());
+			pstmt.setString(3, p.getSpeciality());
+			pstmt.setString(4, p.getName());
+			pstmt.setString(5, p.getDob());
+			
+			
+			pstmt.setInt(6, p.getRuns());
+			pstmt.setInt(7, p.getWickets());
+			pstmt.setInt(8, p.getHighestScore());
+			pstmt.setInt(9, p.getHighestWickets());
+			
+			int i = pstmt.executeUpdate();
+			
+			if(i==1)
+			{
+				System.out.println("inserted");
+			}
+			else
+			{
+				System.out.println("failed");
+			}
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	public Player findById(int id)
+	{
+		Player p = null;
+		try
+		{
+			Connection con = getDatasource().getConnection();
+			String query = "select * from player wher id=?";
+			PreparedStatement pstmt = con.prepareStatement(query);
+			pstmt.setInt(1,id);
+			
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next())
+			{
+				p = new Player();
+				p.setId(rs.getInt(1));
+				p.setCountry(rs.getString(2));
+				p.setSpeciality(rs.getString(3));
+				p.setName(rs.getString(4));
+				p.setDob(rs.getString(5));
+				p.setRuns(rs.getInt(6));
+				p.setWickets(rs.getInt(7));
+				p.setHighestScore(rs.getInt(8));
+				p.setHighestWickets(rs.getInt(9));
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return p;
 	}
 
 }

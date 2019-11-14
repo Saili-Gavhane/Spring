@@ -22,6 +22,18 @@ public class PlayerRunner {
 			System.out.println(p);
 		}
 		
+		Player p = new Player(5,"India","Batsman","MSD","24-APR-65",40000,300,200,5);
+		service.addPlayer(p);
+		
+		
+		//Player p2=service.findById(1);
+		//System.out.println(p2);
+		
+		PlayerService service1 = ctx.getBean("jdbcService",PlayerService.class);
+		Player p1 = new Player(6,"India","Batsman","MSD","24-APR-65",40000,300,200,5);
+		service1.addPlayer(p1);
+		System.out.println("inserted");
+		
 	}
 
 }

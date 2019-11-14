@@ -27,5 +27,14 @@ public class PlayerServiceImpl implements PlayerService {
 		return repository.findAll();
 	}
 	
+	public void addPlayer(Player p)
+	{
+		repository.addPlayer(p);
+	}
+	
+	public Player findById(int id)
+	{
+		return repository.findById(id);
+	}
 
 }
